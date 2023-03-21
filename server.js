@@ -153,10 +153,10 @@ app.listen(port, async () => {
     }
 
     function calculatedFinance(price, porcentagem){
-        let price = parseFloat(price)
-        let porcentagem = parseFloat(porcentagem)
+        let preco = parseFloat(price)
+        let percent = parseFloat(porcentagem)
 
-        return (porcentagem - 100.00) * price
+        return (percent - 100.00) * preco
     }
 
     function createTextToAnalysis() {
