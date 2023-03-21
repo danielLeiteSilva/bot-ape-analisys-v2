@@ -118,6 +118,7 @@ app.listen(port, async () => {
                 vaga = false
                 varanda = false
                 banheiros = false
+                quartos = false
 
             } catch (error) {
                 console.log(error)
