@@ -2,6 +2,8 @@ const { Telegraf } = require('telegraf');
 const { message } = require('telegraf/filters');
 const request = require('request')
 
+const bot = new Telegraf("933198108:AAFChuapeL6Ypig4ZoNWczKlliKROdzqwuo");
+
 const express = require('express')
 const app = express()
 
@@ -12,8 +14,6 @@ app.get("/", (req, res) => {
 })
 
 app.listen(port, () => console.log("Connected"))
-
-const bot = new Telegraf("933198108:AAFChuapeL6Ypig4ZoNWczKlliKROdzqwuo");
 
 let nome = true
 let localizacao = false
