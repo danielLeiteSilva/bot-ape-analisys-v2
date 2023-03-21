@@ -25,7 +25,7 @@ app.listen(port, async () => {
     let vaga = false
     let varanda = false
     let banheiros = false
-    let quartos = true
+    let quartos = false
 
     let object = {}
 
