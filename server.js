@@ -2,6 +2,17 @@ const { Telegraf } = require('telegraf');
 const { message } = require('telegraf/filters');
 const request = require('request')
 
+const express = require('express')
+const app = express()
+
+const port = 8080 || process.env.PORT
+
+app.get("/", (req, res) => {
+    res.status(200).json({response: "ok"})
+})
+
+app.listen(port, () => console.log("Connected"))
+
 const bot = new Telegraf("933198108:AAFChuapeL6Ypig4ZoNWczKlliKROdzqwuo");
 
 let nome = true
