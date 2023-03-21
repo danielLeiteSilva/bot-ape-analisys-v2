@@ -111,6 +111,7 @@ app.listen(port, async () => {
                 const connection = await MongoClient()
                 const insertUser = await connection.insertOne(object)
 
+                
                 console.log("Inserido no banco de dados!!!")
                 console.log(insertUser)
 
