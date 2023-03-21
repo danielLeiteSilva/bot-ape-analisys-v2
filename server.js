@@ -170,7 +170,7 @@ app.listen(port, async () => {
     E que a porcentagem de financiamento seja de 80% para cima (Flexível até 70%)
     Que tenha varanda
     Que tenha vaga
-    Que a entrada em valores que sejam menores que R$ 50.000
+    Que a entrada seja menor que R$ 50.000
     Que tenha um ou dois banheiros (Se tiver dois banheiros, pontuar mais alto)
     Que tenha mais de 2 quartos (Se tiver três, pontuar mais alto)
 
