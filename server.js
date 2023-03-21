@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const MongoClient = require('./MongoClient')
 
 const port = process.env.PORT || 8080
 
@@ -94,9 +95,7 @@ app.listen(port, async () => {
 
             object["distancia"] = result["message"]["distance"]
             object["tempo"] = result["message"]["duration"]
-
-            console.log(object)
-
+            
             let text = createTextToAnalysis()
 
             let resultAnalysis = await chatGptAnalysis(text)
@@ -108,6 +107,12 @@ app.listen(port, async () => {
                 let text = responseAnalysis(res)
 
                 await ctx.telegram.sendMessage(ctx.message.chat.id, text);
+
+                const connection = await MongoClient()
+                const insertUser = await connection.insertOne(body)
+
+                console.log("Inserido no banco de dados!!!")
+                console.log(insertUser)
 
                 nome = true
                 localizacao = false
