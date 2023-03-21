@@ -23,6 +23,8 @@ app.listen(port, async () => {
     let financiamento = false
     let vaga = false
     let varanda = false
+    let banheiros = false
+    let quartos = true
 
     let object = {}
 
@@ -68,8 +70,20 @@ app.listen(port, async () => {
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Possui varanda? `);
             object["vaga"] = await ctx.message.text
             varanda = false
-        } else {
+            banheiros = true
+        }else if(banheiros){
+            await ctx.telegram.sendMessage(ctx.message.chat.id, `Quantos banheiros ele possuí? `);
             object["varanda"] = await ctx.message.text
+            banheiros = false
+            quartos = true
+        }else if(quartos){
+            await ctx.telegram.sendMessage(ctx.message.chat.id, `Quantos quartos ele possuí? `);
+            object["banheiros"] = await ctx.message.text
+            quartos = false
+        } else {
+            object["quartos"] = await ctx.message.text
+            object["entrada"] = calculatedFinance(object["preco"], object["financiamento"])
+
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Aguarde um momento... `);
 
             let addressWork = "Av. Interlagos, 3501 - Vila Arriete, São Paulo - SP, 04661-200"
@@ -80,6 +94,8 @@ app.listen(port, async () => {
 
             object["distancia"] = result["message"]["distance"]
             object["tempo"] = result["message"]["duration"]
+
+            console.log(object)
 
             let text = createTextToAnalysis()
 
@@ -101,6 +117,7 @@ app.listen(port, async () => {
                 financiamento = false
                 vaga = false
                 varanda = false
+                banheiros = false
 
             } catch (error) {
                 console.log(error)
@@ -127,24 +144,35 @@ app.listen(port, async () => {
     
     ${response.description}
 
-    Recomendação: ${response.compro}
+    Eu ${response.compro.toLowerCase()} a compra desse apê, viu!
 
-    Sentimento: ${response.sentiment}
+    Ele pode ser um ${response.sentiment.toLowerCase()} negócio para você!
     
     `
+    }
+
+    function calculatedFinance(price, porcentagem){
+        let price = parseFloat(price)
+        let porcentagem = parseFloat(porcentagem)
+
+        return (porcentagem - 100.00) * price
     }
 
     function createTextToAnalysis() {
         return `Estou procurando um apartamento com as seguintes condições:
 
-    Que fique a menos 20km da empresa
+    Que fique a menos 20km da empresa (Flexível até 25 km)
     Que a nota de reclamação da construtora seja maior que 7
     Que o tempo percorrido seja menor que 1h
-    Que o tamanho seja entre 45m² e 55m²
-    Que o preço seja abaixo de R$ 350.000 reais
-    E que a porcentagem de financiamento seja de 80% para cima
+    Que o tamanho seja entre 45m² e 55m² (Flexível até 40m²)
+    Que o preço seja abaixo de R$ 350.000 reais (Flexível até R$ 450.000 reais)
+    E que a porcentagem de financiamento seja de 80% para cima (Flexível até 70%)
     Que tenha varanda
     Que tenha vaga
+    Que a entrada em valores não seja maior que R$ 50000
+    Que tenha um ou dois banheiros (Se tiver dois banheiros, pontuar mais alto)
+    Que tenha mais de 2 quartos (Se tiver três, pontuar mais alto)
+
     
     Com base nessas informações acima, avalie essas condições: 
     
@@ -157,12 +185,15 @@ app.listen(port, async () => {
     Tempo percorrido: ${object.tempo}
     Varanda: ${object.varanda}
     Vaga: ${object.vaga}
+    Entrada: ${object.entrada}
+    Banheiro: ${object.banheiros}
+    Quartos: ${object.quartos}
     
     Com base nessas informações acima, devolva somente um codigo JSON formatado sem quebra de linha, E NADA MAIS, com os seguintes parametros: 
     nota: 0 - 10 
     description: resumida do porque devo ou não comprar o Apê
     compro: recomendado ou não recomendado
-    sentiment: Bom, ruim, razoável, péssimo, excelente`
+    sentiment: bom, mau, razoável, péssimo, excelente`
     }
 
 
