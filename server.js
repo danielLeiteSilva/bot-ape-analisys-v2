@@ -95,7 +95,7 @@ app.listen(port, async () => {
 
             object["distancia"] = result["message"]["distance"]
             object["tempo"] = result["message"]["duration"]
-            
+
             let text = createTextToAnalysis()
 
             let resultAnalysis = await chatGptAnalysis(text)
@@ -109,7 +109,7 @@ app.listen(port, async () => {
                 await ctx.telegram.sendMessage(ctx.message.chat.id, text);
 
                 const connection = await MongoClient()
-                const insertUser = await connection.insertOne(body)
+                const insertUser = await connection.insertOne(object)
 
                 console.log("Inserido no banco de dados!!!")
                 console.log(insertUser)

@@ -1,6 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb')
 
-const url = "mongodb+srv://DanielLeite:dan@549216895@database.to2xi.mongodb.net/test"
+const url = "mongodb+srv://DanielLeite:Dan%40549216895@database.to2xi.mongodb.net/?retryWrites=true&w=majority"
 const client = new MongoClient(url, { useNewUrlParser: true, serverApi: ServerApiVersion.v1 });
 const dbName = 'apartaments';
 
