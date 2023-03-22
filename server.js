@@ -72,18 +72,29 @@ app.listen(port, async () => {
             object["vaga"] = await ctx.message.text
             varanda = false
             banheiros = true
-        }else if(banheiros){
+        } else if (banheiros) {
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Quantos banheiros ele possuí? `);
             object["varanda"] = await ctx.message.text
             banheiros = false
             quartos = true
-        }else if(quartos){
+        } else if (quartos) {
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Quantos quartos ele possuí? `);
             object["banheiros"] = await ctx.message.text
             quartos = false
         } else {
             object["quartos"] = await ctx.message.text
             object["entrada"] = calculatedFinance(object["preco"], object["financiamento"])
+
+            nome = true
+            localizacao = false
+            nota = false
+            tamanho = false
+            preco = false
+            financiamento = false
+            vaga = false
+            varanda = false
+            banheiros = false
+            quartos = false
 
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Aguarde um momento... `);
 
@@ -113,17 +124,6 @@ app.listen(port, async () => {
 
                 console.log("Inserido no banco de dados!!!")
                 console.log(insertUser)
-
-                nome = true
-                localizacao = false
-                nota = false
-                tamanho = false
-                preco = false
-                financiamento = false
-                vaga = false
-                varanda = false
-                banheiros = false
-                quartos = false
 
             } catch (error) {
                 console.log(error)
@@ -157,7 +157,7 @@ app.listen(port, async () => {
     `
     }
 
-    function calculatedFinance(price, porcentagem){
+    function calculatedFinance(price, porcentagem) {
         let preco = parseFloat(price)
         let percent = parseFloat(porcentagem)
 
