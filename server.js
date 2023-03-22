@@ -127,7 +127,6 @@ app.listen(port, async () => {
                 varanda = false
                 banheiros = false
                 quartos = false
-
             }
 
         }
