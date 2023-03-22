@@ -85,17 +85,6 @@ app.listen(port, async () => {
             object["quartos"] = await ctx.message.text
             object["entrada"] = calculatedFinance(object["preco"], object["financiamento"])
 
-            nome = true
-            localizacao = false
-            nota = false
-            tamanho = false
-            preco = false
-            financiamento = false
-            vaga = false
-            varanda = false
-            banheiros = false
-            quartos = false
-
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Aguarde um momento... `);
 
             let addressWork = "Av. Interlagos, 3501 - Vila Arriete, São Paulo - SP, 04661-200"
@@ -127,6 +116,18 @@ app.listen(port, async () => {
 
             } catch (error) {
                 console.log(error)
+            } finally {
+                nome = true
+                localizacao = false
+                nota = false
+                tamanho = false
+                preco = false
+                financiamento = false
+                vaga = false
+                varanda = false
+                banheiros = false
+                quartos = false
+
             }
 
         }
