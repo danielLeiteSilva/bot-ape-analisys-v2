@@ -298,3 +298,9 @@ app.listen(port, async () => {
 
 })
 
+//P = VP X (1 + i) ^ p x i / (1 + i) ^ p - 1
+
+function calculoPrice(tx, vp, n){ 
+    return vp * Math.pow((1 + tx), n) * tx / Math.pow((1 + tx), tx) - 1
+}
+
