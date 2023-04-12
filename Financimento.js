@@ -6,18 +6,26 @@ class Finance {
     }
 
     calculoParcelaPRICE() {
-        return Math.floor((this.vFinaciado * Math.pow((1 + this.txJuros), this.nMeses) * this.txJuros) / (Math.pow((1 + this.txJuros), this.nMeses) - 1))
+
+        let valor = Math.floor((this.vFinaciado * Math.pow((1 + this.txJuros), this.nMeses) * this.txJuros) / (Math.pow((1 + this.txJuros), this.nMeses) - 1))
+
+        return {
+            parcela1: valor,
+            parcelaN: valor,
+            valorFinal: valor * this.nMeses,
+            diferenca: (valor * this.nMeses) - this.vFinaciado
+        }
     }
 
     calculoParcelaSAC() {
         let armortizacao = this.vFinaciado / this.nMeses
         let juros = this.vFinaciado * this.txJuros
-        let parcela1 = armortizacao + juros
+        let parcela1 = Math.floor(armortizacao + juros)
         let diminuicao = armortizacao * this.txJuros
-        let parcelaN = armortizacao + diminuicao
+        let parcelaN = Math.floor(armortizacao + diminuicao)
 
-        let valorFinal = (parcela1 + parcelaN) * (this.nMeses / 2)
-        let diferenca = valorFinal - this.vFinaciado
+        let valorFinal = Math.floor((parcela1 + parcelaN) * (this.nMeses / 2))
+        let diferenca = Math.floor(valorFinal - this.vFinaciado)
 
         return {
             parcela1,
@@ -28,9 +36,4 @@ class Finance {
     }
 }
 
-
-var cal = new Finance(0.005, 150000, 300)
-
-// console.log(cal.calculoParcelaPrice(0.007, 175000, 420)) 
-console.log(cal.calculoParcelaSAC(150000, 0.005, 300))
-
+module.exports = Finance

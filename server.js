@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 const MongoClient = require('./MongoClient')
+const Finance = require('./Financimento')
+const getScore = require('./Nota')
 
 const port = process.env.PORT || 8080
 
@@ -14,18 +16,20 @@ app.listen(port, async () => {
     const { message } = require('telegraf/filters');
     const request = require('request')
 
-    const bot = new Telegraf("933198108:AAFChuapeL6Ypig4ZoNWczKlliKROdzqwuo");
+    const bot = new Telegraf("933198108:AAHXHGN0Tzcleos_VP3-QENjPOuGQhC5Nxo");
 
     let nome = true
     let localizacao = false
     let nota = false
     let tamanho = false
     let preco = false
-    let financiamento = false
     let vaga = false
     let varanda = false
     let banheiros = false
     let quartos = false
+    let entrada = false
+    let fgts = false
+    let construtora = false
 
     let object = {}
 
@@ -41,30 +45,25 @@ app.listen(port, async () => {
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual é o CEP do empreendimento? `);
             object["nome"] = await ctx.message.text
             localizacao = false
-            nota = true
-        } else if (nota) {
-            await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual é a nota da construtora? `);
+            construtora = true
+        } else if (construtora) {
+            await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual é o nome da construtora? `);
             object["cep"] = await ctx.message.text
-            nota = false
+            construtora = false
             tamanho = true
         } else if (tamanho) {
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual é o tamanho em M² do empreendimento? `);
-            object["nota"] = await ctx.message.text
+            object["construtora"] = await ctx.message.text
             tamanho = false
             preco = true
         } else if (preco) {
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual é o preço do empreendimento? `);
             object["tamanho"] = await ctx.message.text
             preco = false
-            financiamento = true
-        } else if (financiamento) {
-            await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual é a porcentagem de financiamento? `);
-            object["preco"] = await ctx.message.text
-            financiamento = false
             vaga = true
         } else if (vaga) {
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Possui vaga de carro? `);
-            object["financiamento"] = await ctx.message.text
+            object["preco"] = await ctx.message.text
             vaga = false
             varanda = true
         } else if (varanda) {
@@ -81,20 +80,62 @@ app.listen(port, async () => {
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Quantos quartos ele possuí? `);
             object["banheiros"] = await ctx.message.text
             quartos = false
-        } else {
+            entrada = true
+        } else if (entrada) {
+            await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual valor de entrada disponível hoje? `);
             object["quartos"] = await ctx.message.text
-            object["entrada"] = calculatedFinance(object["preco"], object["financiamento"])
+            entrada = false
+            fgts = true
+        } else if (fgts) {
+            await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual valor de FGTS disponível hoje? `);
+            object["entrada"] = await ctx.message.text
+            fgts = false
+        } else {
+            object["fgts"] = await ctx.message.text
 
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Aguarde um momento... `);
 
+            object['nota'] = await getScore(object['construtora'])
+
             let addressWork = "Av. Interlagos, 3501 - Vila Arriete, São Paulo - SP, 04661-200"
+            let addressWorkRaquel = "R. Rio Grande, 500 - Vila Mariana, São Paulo - SP, 04018-001"
 
             let address = await getAddressGoogleWithCep(object["cep"])
 
             let result = await getDistanceAndTime(address["message"], addressWork)
+            let raquel = await getDistanceAndTime(address["message"], addressWorkRaquel)
 
-            object["distancia"] = result["message"]["distance"]
-            object["tempo"] = result["message"]["duration"]
+            object["distanciaDaniel"] = result["message"]["distance"]
+            object["distanciaRaquel"] = raquel["message"]["distance"]
+
+            object["tempoDaniel"] = result["message"]["duration"]
+            object["tempoRaquel"] = raquel["message"]["duration"]
+            object["hora"] = new Date()
+
+
+            let valorParce = parseFloat(object["preco"].replace('.', "").replace("R$").trim())
+            let fgtsParce = parseFloat(object["fgts"].replace('.', "").replace("R$").trim())
+            let valorEntradaDisponivel = parseFloat(object["entrada"].replace('.', "").replace("R$").trim())
+
+            let valorFinanciamento = 211000
+            let txJuros = 0.0
+            if (valorParce >= 264000.00) {
+                txJuros = 8.72  / 100 / 12
+                object['enquadramento'] = "SFH HMP"
+                object['documentacao'] = false
+            } else {
+                txJuros = 7.16 / 100 / 12
+                object['enquadramento'] = "HIS MCMV"
+                object['documentacao'] = true
+            }
+
+            valorFinanciamento = valorFinanciamento - fgtsParce
+            object['financimento'] = valorFinanciamento
+            object['entrada'] = valorParce - valorFinanciamento - valorEntradaDisponivel
+
+            const finance = new Finance(txJuros, valorParce, 420)
+            object['sac'] = finance.calculoParcelaSAC()
+            object['price'] = finance.calculoParcelaPRICE()
 
             let text = createTextToAnalysis()
 
@@ -122,11 +163,13 @@ app.listen(port, async () => {
                 nota = false
                 tamanho = false
                 preco = false
-                financiamento = false
                 vaga = false
                 varanda = false
                 banheiros = false
                 quartos = false
+                entrada = false
+                fgts = false
+                construtora = false
             }
 
         }
@@ -146,6 +189,39 @@ app.listen(port, async () => {
 
     function responseAnalysis(response) {
         return `
+    
+        Nome do empreendimento: ${object['nome']}
+    Construtora: ${object['construtora']}
+    Nota da construtora: ${object['nota']}
+    Tamanho: ${object['tamanho']}
+    Entrada: ${object['entrada'] <= 0 ? 0 : object['entrada'] }
+    Documentacao: ${object['documentacao'] ? "Grátis" : "Paga"}
+    Tipo de financiamento: ${object['enquadramento']}
+    Distancia do trabalho:
+        - Daniel: ${object['distanciaDaniel']}
+        - Raquel: ${object['distanciaRaquel']}
+
+
+    Tempo até o trabalho:
+        - Daniel: ${object['tempoDaniel']}
+        - Raquel: ${object['tempoRaquel']}
+
+
+    Financiamento:
+        Anos: ${420 / 12}
+        - PRICE:
+            primeira: ${object['price']['parcela1']}
+            ultima: ${object['price']['parcelaN']}
+            valor final: ${object['price']['valorFinal']}
+            diferenca: ${object['price']['diferenca']}
+        - SAC:
+            primeira: ${object['sac']['parcela1']}
+            ultima: ${object['sac']['parcelaN']}
+            valor final: ${object['sac']['valorFinal']}
+            diferenca: ${object['sac']['diferenca']}
+    
+    Avaliação da IA
+
     ${checked(response.nota)} Nota do empreendimento: ${response.nota} 
     
     ${response.description}
@@ -183,12 +259,13 @@ app.listen(port, async () => {
     Com base nessas informações acima, avalie essas condições: 
     
     Nome do empreendimento: ${object.nome}
-    Localização (KM): ${object.distancia}
+    Localização (KM) trabalho da Raquel: ${object.distanciaRaquel}
+    Localização (KM) trabalho da Daniel: ${object.distanciaDaniel}
     Nota de reclamação da construtora: ${object.nota}
     Tamanho m²: ${object.tamanho}
     Preço:  ${object.preco}
-    Financiamento (%): ${object.financiamento}
-    Tempo percorrido: ${object.tempo}
+    Tempo percorrido trabalho da Raquel: ${object.tempoRaquel}
+    Tempo percorrido trabalho do Daniel: ${object.tempoDaniel}
     Varanda: ${object.varanda}
     Vaga: ${object.vaga}
     Entrada: ${object.entrada}
@@ -259,7 +336,7 @@ app.listen(port, async () => {
                     }
                 })
 
-            } catch (e) {
+            } catch (Exception) {
                 resolve({ message: Exception, code: 404 })
             }
 
@@ -283,7 +360,7 @@ app.listen(port, async () => {
                     }
                 })
 
-            } catch (e) {
+            } catch (Exception) {
                 resolve({ message: Exception, code: 404 })
             }
 
@@ -300,7 +377,7 @@ app.listen(port, async () => {
 
 //P = VP X (1 + i) ^ p x i / (1 + i) ^ p - 1
 
-function calculoPrice(tx, vp, n){ 
+function calculoPrice(tx, vp, n) {
     return vp * Math.pow((1 + tx), n) * tx / Math.pow((1 + tx), tx) - 1
 }
 
