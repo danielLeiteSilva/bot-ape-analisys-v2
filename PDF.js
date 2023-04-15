@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs')
 
 async function run(object) {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true,  args: ['--no-sandbox '] });
     const page = await browser.newPage();
 
     // Aqui você pode configurar opções adicionais, como tamanho de página, margens, etc.
@@ -463,6 +463,8 @@ async function run(object) {
     </body>
     
     </html>`
+    
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36')
 
     await page.setContent(contentHtml);
 
