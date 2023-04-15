@@ -5,7 +5,7 @@ const getScore = async (construtora) => {
 
     let { message } = await getLink(construtora)
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox '] });
     try {
 
         const page = await browser.newPage();

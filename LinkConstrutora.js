@@ -19,7 +19,6 @@ async function getLink(construtora) {
         } catch (Exception) {
             resolve({ message: Exception, code: 404 })
         }
-
     })
 }
 
