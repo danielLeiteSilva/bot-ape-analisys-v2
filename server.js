@@ -17,7 +17,7 @@ app.listen(port, async () => {
     const { message } = require('telegraf/filters');
     const request = require('request')
 
-    const bot = new Telegraf("933198108:AAFzDclO43-7pkhVlqKzRUtvMTSG_5EN8gY");
+    const bot = new Telegraf("933198108:AAEKBHbV8o2WclXYZCoOJLHbY2-I5eZWhsk");
 
     let nome = true
     let localizacao = false
