@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs')
 
 async function run(object) {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
 
     // Aqui você pode configurar opções adicionais, como tamanho de página, margens, etc.
