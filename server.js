@@ -2,10 +2,9 @@ const express = require('express')
 const app = express()
 const MongoClient = require('./MongoClient')
 const Finance = require('./Financimento')
-const getScore = require('./Nota')
-const run = require('./PDF')
+const fs = require('fs')
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8084
 
 app.get("/", (req, res) => {
     res.status(200).json({ response: "ok" })
@@ -147,12 +146,17 @@ app.listen(port, async () => {
 
             await ctx.telegram.sendMessage(ctx.message.chat.id, `Aguarde um momento... `);
 
-            object['nota'] = await getScore(object['construtora'])
+            let score = await getScore(object['construtora'])
+            object['nota'] = score["message"]
+            console.log(score, object['nota'])
 
             let addressWork = "Av. Interlagos, 3501 - Vila Arriete, São Paulo - SP, 04661-200"
             let addressWorkRaquel = "R. Rio Grande, 500 - Vila Mariana, São Paulo - SP, 04018-001"
 
             let address = await getAndressViaCep(object["cep"])
+            object['endereco'] = address["message"]
+
+
             let geometry = await latLong(address["message"])
             let market = await markets(geometry["message"])
             let hosp = await hospital(geometry["message"])
@@ -162,7 +166,7 @@ app.listen(port, async () => {
             let schools = ""
             let e = 0
             escolas["message"]["results"].map(results => {
-                if(e <= 15){
+                if (e <= 15) {
                     schools = schools += "<li>" + results.name + "</li>" + "\n"
                 }
                 e++
@@ -171,7 +175,7 @@ app.listen(port, async () => {
             let emergency = ""
             let h = 0
             hosp["message"]["results"].map(results => {
-                if(h <= 15 ){
+                if (h <= 15) {
                     emergency = emergency += "<li>" + results.name + "</li>" + "\n"
                 }
                 h++
@@ -180,7 +184,7 @@ app.listen(port, async () => {
             let supermarkets = ""
             let s = 0
             market["message"]["results"].map(results => {
-                if(s <= 15){
+                if (s <= 15) {
                     supermarkets = supermarkets += "<li>" + results.name + "</li>" + "\n"
                 }
                 s++
@@ -225,7 +229,9 @@ app.listen(port, async () => {
 
             valorFinanciamento = valorFinanciamento - fgtsParce
             object['financimento'] = valorFinanciamento
-            object['entrada'] = valorParce - valorFinanciamento - valorEntradaDisponivel
+
+            let entrada = valorParce - valorFinanciamento - valorEntradaDisponivel
+            object['entrada'] = entrada <= 0 ? 0 : entrada
 
             const finance = new Finance(txJuros, valorParce, 420)
             object['sac'] = finance.calculoParcelaSAC()
@@ -242,7 +248,10 @@ app.listen(port, async () => {
             object['description_bot'] = res?.description
             object['compro'] = res?.compro
 
-            await run(object)
+            const file = await getPDF(object)
+            const base64 = file['message']
+
+            fs.writeFileSync("./arquivo.pdf", base64, 'base64')
 
             try {
                 // let res = JSON.parse(response)
@@ -260,7 +269,7 @@ app.listen(port, async () => {
 
             } catch (error) {
                 console.log(error)
-                await ctx.telegram.sendMessage(ctx.message.chat.id, `Não foi possível enviar ${error}` );
+                await ctx.telegram.sendMessage(ctx.message.chat.id, `Não foi possível enviar ${error}`);
             } finally {
 
                 nome = true
@@ -287,74 +296,6 @@ app.listen(port, async () => {
         }
 
     })
-
-    function checked(nota) {
-        if (nota >= 8) {
-            return "✅"
-        } else if (nota >= 5 && nota <= 7.99) {
-            return "⚠️"
-        } else {
-            return "❌"
-        }
-
-    }
-
-    function responseAnalysis(response) {
-        return ` 📋 Nome do empreendimento: ${object['nome']}
-    🏠 Construtora: ${object['construtora']}
-    📝 Nota da construtora: ${object['nota']}
-    📏 Tamanho: ${object['tamanho']}
-    💵 Entrada: ${object['entrada'] <= 0 ? 0 : object['entrada']}
-    📄 Documentacao: ${object['documentacao'] ? "Grátis" : "Paga"}
-    📃 Tipo de financiamento: ${object['enquadramento']}
-    💵 Condomínio: ${object['condomonio']}
-
-    🛒 Mercados:
-        Raio: 1km
-        ${object['mercados']}
-    
-    🏥 Hospitais: 
-        Raio: 5km
-
-
-    📍 Distancia do trabalho:
-        - Daniel: ${object['distanciaDaniel']}
-        - Raquel: ${object['distanciaRaquel']}
-    
-    ⌚ Tempo até o trabalho:
-        - Daniel: ${object['tempoDaniel']}
-        - Raquel: ${object['tempoRaquel']}
-
-    💸 Financiamento:
-        - ANOS: ${420 / 12}
-        - PRICE:
-            Primera: ${object['price']['parcela1']}
-            Última: ${object['price']['parcelaN']}
-            Valor Final: ${object['price']['valorFinal']}
-            Diferença: ${object['price']['diferenca']}
-        - SAC:
-            Primera: ${object['sac']['parcela1']}
-            Última: ${object['sac']['parcelaN']}
-            Valor Final: ${object['sac']['valorFinal']}
-            Diferença: ${object['sac']['diferenca']}
-    
-    🤖 Avaliação da IA
-
-    ${checked(response.nota)} Nota do empreendimento: ${response.nota} 
-    
-    ${response.description}
-
-    ❗ Eu ${response.compro.toLowerCase()} a compra desse apê, viu ❗
-
-    ❗ Ele pode ser um ${response.sentiment.toLowerCase()} negócio para você ❗ `
-    }
-
-    function calculatedFinance(price, porcentagem) {
-        let preco = parseFloat(price)
-        let percent = parseFloat(porcentagem)
-
-        return ((100.00 - percent) / 100) * preco
-    }
 
     function createTextToAnalysis() {
         return `Estou procurando um apartamento com as seguintes condições:
@@ -436,14 +377,24 @@ app.listen(port, async () => {
     }
 
 
-    async function getAddressGoogleWithCep(cep) {
+    async function getPDF(object) {
+
+        const headers = {
+            body: JSON.stringify({
+                object: {...object }
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+
         return new Promise((resolve) => {
             try {
-                request.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${cep}&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
+                request.post(`http://localhost:8082/pdf`, headers, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
-                            const result = JSON.parse(body)["results"][0]["formatted_address"]
-                            resolve({ message: result, code: response.statusCode })
+                            const response = JSON.parse(body)["file"]
+                            resolve({ message: response, code: response.statusCode })
                         } else {
                             resolve({ message: "Not possible resolve request", code: response.statusCode })
                         }
@@ -455,7 +406,38 @@ app.listen(port, async () => {
             } catch (Exception) {
                 resolve({ message: Exception, code: 404 })
             }
+        })
+    }
 
+    async function getScore(construtora) {
+
+        const headers = {
+            body: JSON.stringify({
+                construtora: construtora
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+
+        return new Promise((resolve) => {
+            try {
+                request.post(`http://localhost:8082/score`, headers, (error, response, body) => {
+                    if (!error) {
+                        if (response.statusCode === 200) {
+                            const response = JSON.parse(body)["score"]
+                            resolve({ message: response, code: response.statusCode })
+                        } else {
+                            resolve({ message: "Not possible resolve request", code: response.statusCode })
+                        }
+                    } else {
+                        resolve({ message: error, code: response.statusCode })
+                    }
+                })
+
+            } catch (Exception) {
+                resolve({ message: Exception, code: 404 })
+            }
         })
     }
 
