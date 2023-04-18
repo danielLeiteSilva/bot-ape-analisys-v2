@@ -6,6 +6,9 @@ COPY package*.json ./
 
 ENV PUPPETEER_SKIP_DOWNLOAD=false
 
+RUN npm install -g n
+RUN  n latest
+RUN node --version
 RUN npm install
 RUN npm install puppeteer
 COPY . .
