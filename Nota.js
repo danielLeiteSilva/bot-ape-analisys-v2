@@ -5,13 +5,13 @@ const getScore = async (construtora) => {
 
     let { message } = await getLink(construtora)
 
-    const browser = await puppeteer.launch({
-        headless: false, 
-        ignoreDefaultArgs: ['--disable-extensions'],
-        args: ['--no-sandbox']
-    })
-
     try {
+
+        const browser = await puppeteer.launch({
+            headless: false, 
+            ignoreDefaultArgs: ['--disable-extensions'],
+            args: ['--no-sandbox']
+        })
 
         const page = await browser.newPage();
 
@@ -25,7 +25,6 @@ const getScore = async (construtora) => {
         return resp.split("/")[0]
     } catch (error) {
         console.log(error)
-        await browser.close();
         return "15"
     }
 }
