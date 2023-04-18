@@ -331,7 +331,7 @@ app.listen(port, async () => {
     
     Com base nessas informações acima, devolva somente um codigo JSON formatado sem quebra de linha, E NADA MAIS, com os seguintes parametros: 
     nota: 0 - 10 
-    description: descricao detalhada do porque devo ou não comprar o Apê
+    description: uma descricao detalhada do porque devo ou não comprar o Apê
     compro: recomendo ou não recomendo
     sentiment: bom, mau, razoável, péssimo, excelente`
     }
