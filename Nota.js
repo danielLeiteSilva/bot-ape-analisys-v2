@@ -8,7 +8,8 @@ const getScore = async (construtora) => {
     try {
 
         const browser = await puppeteer.launch({
-            headless: false,
+            headless: true,
+            executablePath: '/usr/bin/google-chrome',
             args: ['--no-sandbox']
         })
 
