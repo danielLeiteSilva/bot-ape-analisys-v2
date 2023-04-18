@@ -11,6 +11,8 @@ RUN  n latest
 RUN node --version
 RUN npm install
 RUN npm install puppeteer
+RUN node node_modules/puppeteer/install.js
+
 COPY . .
 
 EXPOSE 8080
