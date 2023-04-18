@@ -23,4 +23,6 @@ async function getLink(construtora) {
 }
 
 
+
+
 module.exports = getLink
