@@ -8,8 +8,7 @@ const getScore = async (construtora) => {
     try {
 
         const browser = await puppeteer.launch({
-            headless: false, 
-            ignoreDefaultArgs: ['--disable-extensions'],
+            headless: false,
             args: ['--no-sandbox']
         })
 
