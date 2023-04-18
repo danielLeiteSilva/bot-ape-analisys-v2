@@ -24,6 +24,9 @@ COPY package.json ./
 # Install NPM dependencies for function
 RUN npm install
 
+# Copy handler function and tsconfig
+COPY server.js ./
+
 # Expose app
 EXPOSE 8080
 
