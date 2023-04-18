@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-ENV PUPPETEER_SKIP_DOWNLOAD=false
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 
 RUN npm install -g n
 RUN  n latest
