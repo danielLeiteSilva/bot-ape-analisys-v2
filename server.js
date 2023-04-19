@@ -468,7 +468,7 @@ app.listen(port, async () => {
     async function getDistanceAndTime(address, addressWork) {
         return new Promise((resolve) => {
             try {
-                request.get(encodeURI(`https://maps.googleapis.com/maps/api/directions/json?origin=${address}&destination=${addressWork}&mode=transit&transit_mode=bus&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`), (error, response, body) => {
+                request.get(encodeURI(`https://maps.googleapis.com/maps/api/directions/json?origin=${address}&destination=${addressWork}&mode=transit&transit_mode=bus&departure_time=1681871147&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`), (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
                             const distance = JSON.parse(body)["routes"][0]["legs"][0]["distance"]["text"]
