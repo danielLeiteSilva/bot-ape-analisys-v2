@@ -70,22 +70,26 @@ app.listen(port, async () => {
             preco = false
             vaga = true
         } else if (vaga) {
-            await ctx.telegram.sendMessage(ctx.message.chat.id, `Possui vaga de carro? `);
+            // await ctx.telegram.sendMessage(ctx.message.chat.id, `Possui vaga de carro? `);
+            await ctx.reply('Possui vaga de carro?', Markup.keyboard(['Sim', 'Não']).resize().oneTime())
             object["preco"] = await ctx.message.text
             vaga = false
             varanda = true
         } else if (varanda) {
-            await ctx.telegram.sendMessage(ctx.message.chat.id, `Possui varanda? `);
+            // await ctx.telegram.sendMessage(ctx.message.chat.id, `Possui varanda? `);
+            await ctx.reply('Possui varanda?', Markup.keyboard(['Sim', 'Não']).resize().oneTime())
             object["vaga"] = await ctx.message.text
             varanda = false
             banheiros = true
         } else if (banheiros) {
-            await ctx.telegram.sendMessage(ctx.message.chat.id, `Quantos banheiros ele possuí? `);
+            // await ctx.telegram.sendMessage(ctx.message.chat.id, `Quantos banheiros ele possuí? `);
+            await ctx.reply('Quantos banheiros ele possuí?', Markup.keyboard(['1', '2', '+2']).resize().oneTime())
             object["varanda"] = await ctx.message.text
             banheiros = false
             quartos = true
         } else if (quartos) {
-            await ctx.telegram.sendMessage(ctx.message.chat.id, `Quantos quartos ele possuí? `);
+            // await ctx.telegram.sendMessage(ctx.message.chat.id, `Quantos quartos ele possuí? `);
+            await ctx.reply('Quantos quartos ele possuí?', Markup.keyboard(['1', '2', '+2']).resize().oneTime())
             object["banheiros"] = await ctx.message.text
             quartos = false
             entrada = true
@@ -99,28 +103,31 @@ app.listen(port, async () => {
             object["entrada"] = await ctx.message.text
             fgts = false
             garagem = true
-
-
+            
         } else if (garagem) {
-            await ctx.telegram.sendMessage(ctx.message.chat.id, `Garagem é coberta? `);
+            // await ctx.telegram.sendMessage(ctx.message.chat.id, `Garagem é coberta? `);
+            await ctx.reply('Garagem é coberta?', Markup.keyboard(['Sim', 'Não']).resize().oneTime())
             object["fgts"] = await ctx.message.text
             garagem = false
             planta = true
 
         } else if (planta) {
-            await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual tipo de planta (Canto ou Corredor)? `);
+            // await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual tipo de planta? `);
+            await ctx.reply('Qual tipo de planta?', Markup.keyboard(['Canto', 'Corredor']).resize().oneTime())
             object["garagem"] = await ctx.message.text
             planta = false
             vista = true
 
         } else if (vista) {
-            await ctx.telegram.sendMessage(ctx.message.chat.id, `Vista (Aberta ou Fechada)? `);
+            // await ctx.telegram.sendMessage(ctx.message.chat.id, `Vista do apartamento? `);
+            await ctx.reply('Vista do apartamento?', Markup.keyboard(['Aberta', 'Fechada']).resize().oneTime())
             object["planta"] = await ctx.message.text
             vista = false
             sol = true
 
         } else if (sol) {
-            await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual o Lado do Sol? `);
+            // await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual o lado do sol? `);
+            await ctx.reply('Qual o lado do sol?', Markup.keyboard(['Manhã', 'Tarde']).resize().oneTime())
             object["vista"] = await ctx.message.text
             sol = false
             obra = true
