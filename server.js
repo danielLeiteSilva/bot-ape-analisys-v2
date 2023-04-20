@@ -258,15 +258,13 @@ app.listen(port, async () => {
             const file = await getPDF(object)
             const base64 = file['message']
 
-            fs.writeFileSync("./arquivo.pdf", base64, 'base64')
+            let nome_file =  object["nome"].replace(" ", "_").toLowerCase()
+            fs.writeFileSync(`./${nome_file}.pdf`, base64, 'base64')
 
             try {
-                // let res = JSON.parse(response)
-                // let text = responseAnalysis(res)
 
-                await ctx.replyWithDocument({ source: "./arquivo.pdf" })
-
-                // await ctx.telegram.sendMessage(ctx.message.chat.id, text);
+                await ctx.replyWithDocument({ source: `./${nome_file}.pdf` })
+                fs.rmSync(`./${nome_file}.pdf`)
 
                 const connection = await MongoClient()
                 const insertUser = await connection.insertOne(object)
