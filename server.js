@@ -527,7 +527,7 @@ app.listen(port, async () => {
 
         return new Promise((resolve) => {
             try {
-                request.post(`https://api-get-score.herokuapp.com//pdf`, headers, (error, response, body) => {
+                request.post(`https://api-get-score.herokuapp.com/pdf`, headers, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
                             const response = JSON.parse(body)["file"]
