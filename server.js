@@ -20,6 +20,9 @@ app.listen(port, async () => {
 
     const bot = new Telegraf("1752567066:AAGm7V0w4JRqDEu5N9HILjmsLWh1MV_c_bs");
 
+    //Test
+    // const bot = new Telegraf("997375635:AAEb5KD5ylWpo3OcAOviPpVX7_xRKSMm1mw");
+
 
     let nome = true
     let localizacao = false
@@ -531,6 +534,7 @@ app.listen(port, async () => {
 
         return new Promise((resolve) => {
             try {
+                // request.post(`http://localhost:8081/pdf`, headers, (error, response, body) => {
                 request.post(`https://api-get-score.herokuapp.com/pdf`, headers, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
@@ -563,6 +567,7 @@ app.listen(port, async () => {
 
         return new Promise((resolve) => {
             try {
+                // request.post(`http://localhost:8081/score`, headers, (error, response, body) => {
                 request.post(`https://api-get-score.herokuapp.com/score`, headers, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
