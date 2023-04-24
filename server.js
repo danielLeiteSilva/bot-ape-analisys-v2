@@ -76,7 +76,7 @@ app.listen(port, async () => {
                 year: '2-digit'
             })
 
-            let format_value = format_data.split(",") 
+            let format_value = format_data.split(",")
 
             let format_date = format_value[0].split("/").join("_")
             let format_hour = format_value[1].split(":").join("-").trim()
@@ -206,14 +206,14 @@ app.listen(port, async () => {
                 object["contrato"] = await ctx.message.text
                 taxaJ = false
                 renda = true
-            
-            }else if (renda) {
+
+            } else if (renda) {
                 await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual a renda?`);
                 object["taxa"] = await ctx.message.text
                 renda = false
                 andares = true
 
-            }else if (andares) {
+            } else if (andares) {
                 await ctx.telegram.sendMessage(ctx.message.chat.id, `Qual a quantidade de andares?`);
                 object["renda"] = await ctx.message.text
                 andares = false
@@ -241,7 +241,7 @@ app.listen(port, async () => {
                 let hosp = await hospital(geometry["message"])
                 let escolas = await school(geometry["message"])
                 let trens = await trains(geometry["message"])
-                let metros = await subway(geometry["message"]) 
+                let metros = await subway(geometry["message"])
 
 
                 let subway_data = ""
@@ -270,7 +270,7 @@ app.listen(port, async () => {
                 })
 
                 object['metro'] = subway_data
-                object['trens'] = train 
+                object['trens'] = train
                 object["mercados"] = supermarkets
                 object["hospitais"] = emergency
                 object['escolas'] = schools
@@ -312,10 +312,10 @@ app.listen(port, async () => {
                 let resultFinanciamento
                 let entrada
                 let financimento = valorParce - valorEntradaDisponivel
-                if(financimento > valorFinanciamento){
+                if (financimento > valorFinanciamento) {
                     entrada = financimento - valorFinanciamento - fgtsParce
                     resultFinanciamento = valorFinanciamento
-                }else{
+                } else {
                     entrada = 0
                     resultFinanciamento = financimento - fgts
                 }
@@ -331,18 +331,18 @@ app.listen(port, async () => {
                 object['price'] = finance.calculoParcelaPRICE()
 
 
-                let renda = parseFloat(object["renda"]) 
+                let renda = parseFloat(object["renda"])
                 let parcela1Sac = parseFloat(object['sac']['parcela1'])
                 let parcela1Price = parseFloat(object['price']['parcela1'])
 
-                let percentSac = (parcela1Sac / renda) * 100 
-                let percentPrice = (parcela1Price / renda) * 100 
+                let percentSac = (parcela1Sac / renda) * 100
+                let percentPrice = (parcela1Price / renda) * 100
 
-                if(percentSac < 30){
+                if (percentSac < 30) {
                     object['type_fin'] = "Price/Sac"
-                }else if(percentPrice < 30){
+                } else if (percentPrice < 30) {
                     object['type_fin'] = "Price"
-                }else{
+                } else {
                     object['type_fin'] = "NEF"
                 }
 
@@ -350,13 +350,13 @@ app.listen(port, async () => {
                 let his2 = 1302 * 6
                 let hmp = 1302 * 10
 
-                if(renda < his1){
+                if (renda < his1) {
                     object['zoneamento'] = "HIS 1"
-                }else if(renda < his2){
+                } else if (renda < his2) {
                     object['zoneamento'] = "HIS 2"
-                }else if(renda < hmp){
+                } else if (renda < hmp) {
                     object['zoneamento'] = "HMP"
-                }else{
+                } else {
                     object['zoneamento'] = "R2V"
                 }
 
@@ -378,6 +378,10 @@ app.listen(port, async () => {
                 fs.writeFileSync(`./${nome_file}.pdf`, base64, 'base64')
 
                 try {
+
+                    Markup.inlineKeyboard([
+                        Markup.button.url('Mapa de enchentes:', 'https://www.google.com/maps/d/edit?mid=1j-syQuSeo5O3m4iRZwdIk7msXLrek2A&usp=sharing')
+                    ])
 
                     await ctx.replyWithDocument({ source: `./${nome_file}.pdf` })
                     fs.rmSync(`./${nome_file}.pdf`)
