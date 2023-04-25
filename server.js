@@ -348,9 +348,9 @@ app.listen(port, async () => {
                     object['type_fin'] = "NEF"
                 }
 
-                let his1 = 1302 * 3
-                let his2 = 1302 * 6
-                let hmp = 1302 * 10
+                let his1 = parseFloat(1302 * 3)
+                let his2 = parseFloat(1302 * 6)
+                let hmp = parseFloat(1302 * 10)
 
                 if (renda < his1) {
                     object['zoneamento'] = "HIS 1"
