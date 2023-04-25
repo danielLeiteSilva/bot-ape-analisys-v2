@@ -384,9 +384,12 @@ app.listen(port, async () => {
                     // Markup.inlineKeyboard([
                     //     Markup.button.url('Mapa de enchentes:', 'https://www.google.com/maps/d/edit?mid=1j-syQuSeo5O3m4iRZwdIk7msXLrek2A&usp=sharing')
                     // ])
+                    
 
                     await ctx.replyWithDocument({ source: `./${nome_file}.pdf` })
                     fs.rmSync(`./${nome_file}.pdf`)
+
+                    await ctx.telegram.sendMessage(ctx.message.chat.id, `MAPS: https://www.google.com/maps/d/edit?mid=1j-syQuSeo5O3m4iRZwdIk7msXLrek2A&usp=sharing`);
 
                     const connection = await MongoClient()
                     object['_id'] = new ObjectId()
