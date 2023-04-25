@@ -296,7 +296,7 @@ app.listen(port, async () => {
 
                 let valorFinanciamento = 240000
                 let txJuros = 0.0
-                if (valorParce >= 264000.00) {
+                if (valorParce > 264000.00) {
                     txJuros = taxa / 100 / 12
                     object['enquadramento'] = "SFH"
                     object['documentacao'] = false
@@ -312,8 +312,8 @@ app.listen(port, async () => {
 
                 object["condomonio"] = tam * 11
 
-                let resultFinanciamento
-                let entrada
+                let resultFinanciamento = 0
+                let entrada = 0 
                 let financimento = valorParce - valorEntradaDisponivel
                 if (financimento > valorFinanciamento) {
                     entrada = financimento - valorFinanciamento - fgtsParce
@@ -332,7 +332,6 @@ app.listen(port, async () => {
                 const finance = new Finance(txJuros, resultFinanciamento, 420)
                 object['sac'] = finance.calculoParcelaSAC()
                 object['price'] = finance.calculoParcelaPRICE()
-
 
                 let renda = parseFloat(object["renda"])
                 let parcela1Sac = parseFloat(object['sac']['parcela1'])
