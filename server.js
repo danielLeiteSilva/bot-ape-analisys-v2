@@ -230,7 +230,7 @@ app.listen(port, async () => {
 
                 let score = await getScore(object['construtora'])
                 object['nota'] = score["message"]
-                console.log(score, object['nota'])
+                console.log(object['nota'])
 
                 let addressWork = "Av. Interlagos, 3501 - Vila Arriete, São Paulo - SP, 04661-200"
                 let addressWorkRaquel = "R. Rio Grande, 500 - Vila Mariana, São Paulo - SP, 04018-001"
@@ -342,10 +342,13 @@ app.listen(port, async () => {
 
                 if (percentSac < 30) {
                     object['type_fin'] = "Price/Sac"
+                    object["valor_max"] = parcela1Sac
                 } else if (percentPrice < 30) {
                     object['type_fin'] = "Price"
+                    object["valor_max"] = parcela1Price
                 } else {
                     object['type_fin'] = "NEF"
+                    object["valor_max"] = parcela1Price
                 }
 
                 let his1 = parseFloat(1302 * 3)
@@ -380,11 +383,6 @@ app.listen(port, async () => {
                 fs.writeFileSync(`./${nome_file}.pdf`, base64, 'base64')
 
                 try {
-
-                    // Markup.inlineKeyboard([
-                    //     Markup.button.url('Mapa de enchentes:', 'https://www.google.com/maps/d/edit?mid=1j-syQuSeo5O3m4iRZwdIk7msXLrek2A&usp=sharing')
-                    // ])
-                    
 
                     await ctx.replyWithDocument({ source: `./${nome_file}.pdf` })
                     fs.rmSync(`./${nome_file}.pdf`)

@@ -58,3 +58,10 @@
 //         console.log(supermarkets)
 //     })
 // })
+
+
+var atual = "600000,00";
+var valor = parseFloat(atual)
+atual = valor.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+
+console.log(atual)
