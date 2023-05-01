@@ -225,7 +225,6 @@ app.listen(port, async () => {
 
                 object["andares"] = await ctx.message.text
 
-
                 await ctx.telegram.sendMessage(ctx.message.chat.id, `⌛ Aguarde um momento... ⌛ `);
 
                 let score = await getScore(object['construtora'])
@@ -239,7 +238,6 @@ app.listen(port, async () => {
                 object['endereco'] = address["message"]
 
                 let geometry = await latLong(object["cep"])
-
 
                 let market = await markets(geometry["message"])
                 let hosp = await hospital(geometry["message"])
@@ -316,7 +314,7 @@ app.listen(port, async () => {
                 object["condomonio"] = tam * 11
 
                 let resultFinanciamento = 0
-                let entrada = 0 
+                let entrada = 0
                 let financimento = valorParce - valorEntradaDisponivel
                 if (financimento > valorFinanciamento) {
                     entrada = financimento - valorFinanciamento - fgtsParce
@@ -350,8 +348,9 @@ app.listen(port, async () => {
                     object['type_fin'] = "Price"
                     object["valor_max"] = parcela1Price
                 } else {
+                    let percentAcess = (renda * 30) / 100
                     object['type_fin'] = "NEF"
-                    object["valor_max"] = parcela1Price
+                    object["valor_max"] = percentAcess
                 }
 
                 let his1 = parseFloat(1302 * 3)
@@ -641,11 +640,11 @@ app.listen(port, async () => {
     async function latLong(address) {
         return new Promise((resolve) => {
             try {
-                request.get(`https://brasilapi.com.br/api/cep/v2/${address}`, (error, response, body) => {
+                request.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
-                            const { coordinates } = JSON.parse(body)['location']
-
+                            const { location } = JSON.parse(body)['geometry']
+                            const coordinates = { latitude: location.lat, longitude: location.lng }
                             resolve({ message: coordinates, code: response.statusCode })
                         } else {
                             resolve({ message: "Not possible resolve request", code: response.statusCode })
