@@ -247,6 +247,8 @@ app.listen(port, async () => {
                 let trens = await trains(geometry["message"])
                 let metros = await subway(geometry["message"])
 
+                object['latitude'] = geometry['latitude']
+                object['longitude'] = geometry['longitude']
 
                 let subway_data = ""
                 metros["message"]["results"].map(results => {
@@ -618,7 +620,6 @@ app.listen(port, async () => {
                 request.get(encodeURI(`https://maps.googleapis.com/maps/api/directions/json?origin=${address}&destination=${addressWork}&mode=transit&transit_mode=bus&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`), (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
-
                             const distance = JSON.parse(body)["routes"][0]["legs"][0]["distance"]["text"]
                             const duration = JSON.parse(body)["routes"][0]["legs"][0]["duration"]["text"]
                             resolve({ message: { distance, duration }, code: response.statusCode })
@@ -666,9 +667,6 @@ app.listen(port, async () => {
                 request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.latitude},${geometry.longitude}&radius=5000&type=train_station&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
-
-                            console.log(geometry)
-
                             const response = JSON.parse(body)
                             resolve({ message: response, code: response.statusCode })
                         } else {
