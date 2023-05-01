@@ -614,7 +614,7 @@ app.listen(port, async () => {
     async function getDistanceAndTime(address, addressWork) {
         return new Promise((resolve) => {
             try {
-                request.get(encodeURI(`https://maps.googleapis.com/maps/api/directions/json?origin=${address}&destination=${addressWork}&mode=transit&transit_mode=bus&departure_time=1681786080&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`), (error, response, body) => {
+                request.get(encodeURI(`https://maps.googleapis.com/maps/api/directions/json?origin=${address}&destination=${addressWork}&mode=transit&transit_mode=bus&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`), (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
                             const distance = JSON.parse(body)["routes"][0]["legs"][0]["distance"]["text"]
@@ -638,10 +638,10 @@ app.listen(port, async () => {
     async function latLong(address) {
         return new Promise((resolve) => {
             try {
-                request.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(address)}&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
+                request.get(`https://brasilapi.com.br/api/cep/v2/${address}`, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
-                            const { location } = JSON.parse(body)['results'][0]['geometry']
+                            const { location } = JSON.parse(body)['location']['coordinates']
 
                             resolve({ message: location, code: response.statusCode })
                         } else {
@@ -661,7 +661,7 @@ app.listen(port, async () => {
     async function trains(geometry) {
         return new Promise((resolve) => {
             try {
-                request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.lat},${geometry.lng}&radius=5000&type=train_station&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
+                request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.latitude},${geometry.longitude}&radius=5000&type=train_station&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
                             const response = JSON.parse(body)
@@ -683,7 +683,7 @@ app.listen(port, async () => {
     async function subway(geometry) {
         return new Promise((resolve) => {
             try {
-                request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.lat},${geometry.lng}&radius=5000&type=subway_station&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
+                request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.latitude},${geometry.longitude}&radius=5000&type=subway_station&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
                             const response = JSON.parse(body)
@@ -705,7 +705,7 @@ app.listen(port, async () => {
     async function markets(geometry) {
         return new Promise((resolve) => {
             try {
-                request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.lat},${geometry.lng}&radius=1000&type=supermarket&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
+                request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.latitude},${geometry.longitude}&radius=1000&type=supermarket&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
                             const response = JSON.parse(body)
@@ -728,7 +728,7 @@ app.listen(port, async () => {
     async function hospital(geometry) {
         return new Promise((resolve) => {
             try {
-                request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.lat},${geometry.lng}&radius=10000&type=hospital&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
+                request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.latitude},${geometry.longitude}&radius=10000&type=hospital&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
                             const response = JSON.parse(body)
@@ -751,7 +751,7 @@ app.listen(port, async () => {
     async function school(geometry) {
         return new Promise((resolve) => {
             try {
-                request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.lat},${geometry.lng}&radius=1000&type=school&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
+                request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.latitude},${geometry.longitude}&radius=1000&type=school&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
                             const response = JSON.parse(body)
