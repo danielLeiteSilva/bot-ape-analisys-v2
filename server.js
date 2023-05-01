@@ -18,10 +18,10 @@ app.listen(port, async () => {
     const { message } = require('telegraf/filters');
     const request = require('request')
 
-    const bot = new Telegraf("1752567066:AAGm7V0w4JRqDEu5N9HILjmsLWh1MV_c_bs");
+    // const bot = new Telegraf("1752567066:AAGm7V0w4JRqDEu5N9HILjmsLWh1MV_c_bs");
 
     //Test
-    // const bot = new Telegraf("997375635:AAEb5KD5ylWpo3OcAOviPpVX7_xRKSMm1mw");
+    const bot = new Telegraf("997375635:AAEb5KD5ylWpo3OcAOviPpVX7_xRKSMm1mw");
 
 
     let nome = true
@@ -238,8 +238,9 @@ app.listen(port, async () => {
                 let address = await getAndressViaCep(object["cep"])
                 object['endereco'] = address["message"]
 
+                let geometry = await latLong(object["cep"])
 
-                let geometry = await latLong(address["message"])
+
                 let market = await markets(geometry["message"])
                 let hosp = await hospital(geometry["message"])
                 let escolas = await school(geometry["message"])
@@ -617,7 +618,7 @@ app.listen(port, async () => {
                 request.get(encodeURI(`https://maps.googleapis.com/maps/api/directions/json?origin=${address}&destination=${addressWork}&mode=transit&transit_mode=bus&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`), (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
-                            
+
                             const distance = JSON.parse(body)["routes"][0]["legs"][0]["distance"]["text"]
                             const duration = JSON.parse(body)["routes"][0]["legs"][0]["duration"]["text"]
                             resolve({ message: { distance, duration }, code: response.statusCode })
@@ -642,9 +643,9 @@ app.listen(port, async () => {
                 request.get(`https://brasilapi.com.br/api/cep/v2/${address}`, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
-                            const { location } = JSON.parse(body)['location']['coordinates']
+                            const { coordinates } = JSON.parse(body)['location']
 
-                            resolve({ message: location, code: response.statusCode })
+                            resolve({ message: coordinates, code: response.statusCode })
                         } else {
                             resolve({ message: "Not possible resolve request", code: response.statusCode })
                         }
@@ -665,6 +666,9 @@ app.listen(port, async () => {
                 request.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${geometry.latitude},${geometry.longitude}&radius=5000&type=train_station&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
+
+                            console.log(geometry)
+
                             const response = JSON.parse(body)
                             resolve({ message: response, code: response.statusCode })
                         } else {
