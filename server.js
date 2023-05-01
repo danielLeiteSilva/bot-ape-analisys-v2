@@ -643,7 +643,7 @@ app.listen(port, async () => {
                 request.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`, (error, response, body) => {
                     if (!error) {
                         if (response.statusCode === 200) {
-                            const { location } = JSON.parse(body)['geometry']
+                            const { location } = JSON.parse(body)['result'][0]['geometry']
                             const coordinates = { latitude: location.lat, longitude: location.lng }
                             resolve({ message: coordinates, code: response.statusCode })
                         } else {
