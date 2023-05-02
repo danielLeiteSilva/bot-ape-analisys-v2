@@ -18,10 +18,10 @@ app.listen(port, async () => {
     const { message } = require('telegraf/filters');
     const request = require('request')
 
-    const bot = new Telegraf("1752567066:AAGm7V0w4JRqDEu5N9HILjmsLWh1MV_c_bs");
+    // const bot = new Telegraf("1752567066:AAGm7V0w4JRqDEu5N9HILjmsLWh1MV_c_bs");
 
     //Test
-    // const bot = new Telegraf("997375635:AAEb5KD5ylWpo3OcAOviPpVX7_xRKSMm1mw");
+    const bot = new Telegraf("997375635:AAEb5KD5ylWpo3OcAOviPpVX7_xRKSMm1mw");
 
 
     let nome = true
@@ -371,8 +371,12 @@ app.listen(port, async () => {
 
                 let resultAnalysis = await chatGptAnalysis(text)
 
+                console.log(resultAnalysis)
+
                 let response = JSON.parse(resultAnalysis["message"])["choices"][0]["text"]
                 let res = JSON.parse(response)
+
+                console.log(res)
 
                 object['nota_bot'] = res?.nota
                 object['description_bot'] = res?.description
