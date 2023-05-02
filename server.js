@@ -367,20 +367,20 @@ app.listen(port, async () => {
                     object['zoneamento'] = "R2V"
                 }
 
-                let text = createTextToAnalysis()
+                // let text = createTextToAnalysis()
 
-                let resultAnalysis = await chatGptAnalysis(text)
+                // let resultAnalysis = await chatGptAnalysis(text)
 
-                console.log(resultAnalysis)
+                // console.log(resultAnalysis)
 
-                let response = JSON.parse(resultAnalysis["message"])["choices"][0]["text"]
-                let res = JSON.parse(response)
+                // let response = JSON.parse(resultAnalysis["message"])["choices"][0]["text"]
+                // let res = JSON.parse(response)
 
-                console.log(res)
+                // console.log(res)
 
-                object['nota_bot'] = res?.nota
-                object['description_bot'] = res?.description
-                object['compro'] = res?.compro
+                object['nota_bot'] = "NOT"
+                object['description_bot'] = "NOT"
+                object['compro'] = "NOT"
 
                 const file = await getPDF(object)
                 const base64 = file['message']
@@ -497,7 +497,7 @@ app.listen(port, async () => {
                 top_p: 1
             }),
             headers: {
-                "Authorization": `Bearer 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`,
+                "Authorization": `Bearer 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`,
                 "Content-Type": "application/json"
             }
         }
