@@ -380,7 +380,7 @@ app.listen(port, async () => {
                     resultFinanciamento = valorFinanciamento
                 } else {
                     entrada = 0
-                    resultFinanciamento = financimento - fgts
+                    resultFinanciamento = financimento - fgtsParce
                 }
 
                 object['financimento'] = resultFinanciamento
