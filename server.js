@@ -18,10 +18,10 @@ app.listen(port, async () => {
     const { message } = require('telegraf/filters');
     const request = require('request')
 
-    const bot = new Telegraf("1752567066:AAGm7V0w4JRqDEu5N9HILjmsLWh1MV_c_bs");
+    // const bot = new Telegraf("1752567066:AAGm7V0w4JRqDEu5N9HILjmsLWh1MV_c_bs");
 
     //Test
-    // const bot = new Telegraf("997375635:AAEb5KD5ylWpo3OcAOviPpVX7_xRKSMm1mw");
+    const bot = new Telegraf("997375635:AAEb5KD5ylWpo3OcAOviPpVX7_xRKSMm1mw");
 
 
     let nome = true
@@ -48,11 +48,15 @@ app.listen(port, async () => {
     let renda = false
     let andares = false
 
+    let residence = true
+
     let object = {}
 
 
     let relatorio = false
     let analise = false
+    let map = false
+    let cep = false
 
     console.log("Start Bot!!!")
     console.log("Connected")
@@ -93,6 +97,61 @@ app.listen(port, async () => {
             fs.rmSync(`./${name_plan}.xlsx`)
 
             relatorio = false
+        } else if ('map' === command || map) {
+
+            map = true
+
+            const connection = await MongoClient()
+            let all = await connection.find({}).toArray()
+
+            let info = []
+            all.forEach(element => {
+                let object = {
+                    local: element["endereco"],
+                    latitude: element["latitude"],
+                    longitude: element["longitude"]
+                }
+
+                info.push(object)
+            })
+
+            const workSheet = XLSX.utils.json_to_sheet(info)
+            const workBook = XLSX.utils.book_new()
+
+            let date = new Date()
+            let format_data = date.toLocaleTimeString('pt-BR', {
+                timeZone: 'America/Sao_Paulo',
+                day: '2-digit',
+                month: '2-digit',
+                year: '2-digit'
+            })
+
+            let format_value = format_data.split(",")
+
+            let format_date = format_value[0].split("/").join("_")
+            let format_hour = format_value[1].split(":").join("-").trim()
+
+            let name_plan = `map_${format_date}_${format_hour}`
+
+            XLSX.utils.book_append_sheet(workBook, workSheet, 'Maps')
+            XLSX.writeFile(workBook, `${name_plan}.xlsx`)
+
+            await ctx.replyWithDocument({ source: `./${name_plan}.xlsx` })
+            fs.rmSync(`./${name_plan}.xlsx`)
+
+            map = false
+        } else if ('cep' === command || cep) {
+            cep = true
+            if (residence) {
+                await ctx.telegram.sendMessage(ctx.message.chat.id, `Digite o endereço...`);
+                residence = false
+            } else {
+                endereco = await ctx.message.text
+                let code = await getPostalCode(endereco)
+
+                await ctx.telegram.sendMessage(ctx.message.chat.id, `${code["message"]}`);
+                cep = false
+            }
         } else if ('analise' === command || analise) {
             analise = true
             if (nome) {
@@ -245,8 +304,8 @@ app.listen(port, async () => {
                 let trens = await trains(geometry["message"])
                 let metros = await subway(geometry["message"])
 
-                object['latitude'] = geometry['latitude']
-                object['longitude'] = geometry['longitude']
+                object['latitude'] = geometry["message"]["latitude"]
+                object['longitude'] = geometry["message"]["longitude"]
 
                 let subway_data = ""
                 metros["message"]["results"].map(results => {
@@ -289,13 +348,13 @@ app.listen(port, async () => {
                 object["tempoRaquel"] = raquel["message"]["duration"]
                 object["hora"] = new Date()
 
-                let valorParce = parseFloat(object["preco"].replace('.', "").replace("R$").trim())
-                let fgtsParce = parseFloat(object["fgts"].replace('.', "").replace("R$").trim())
-                let valorEntradaDisponivel = parseFloat(object["entrada"].replace('.', "").replace("R$").trim())
+                let valorParce = parseFloat(object["preco"])
+                let fgtsParce = parseFloat(object["fgts"])
+                let valorEntradaDisponivel = parseFloat(object["entrada"])
 
                 let taxa = parseFloat(object['taxa'])
 
-                let valorFinanciamento = 240000
+                let valorFinanciamento = 211000
                 let txJuros = 0.0
                 if (valorParce > 264000.00) {
                     txJuros = taxa / 100 / 12
@@ -663,6 +722,30 @@ app.listen(port, async () => {
             }
         })
     }
+
+
+    async function getPostalCode(address) {
+        return new Promise((resolve) => {
+            try {
+                request.get(encodeURI(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0`), (error, response, body) => {
+                    if (!error) {
+                        if (response.statusCode === 200) {
+                            const location  = JSON.parse(body)['results'][0]["address_components"].filter(element => element['types'][0] === "postal_code")
+                            resolve({ message: location[0]['long_name'], code: response.statusCode })
+                        } else {
+                            resolve({ message: "Not possible resolve request", code: response.statusCode })
+                        }
+                    } else {
+                        resolve({ message: error, code: response.statusCode })
+                    }
+                })
+    
+            } catch (Exception) {
+                resolve({ message: Exception, code: 404 })
+            }
+        })
+    }
+    
 
     async function trains(geometry) {
         return new Promise((resolve) => {
