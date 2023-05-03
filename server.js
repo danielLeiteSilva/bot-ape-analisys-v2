@@ -354,7 +354,7 @@ app.listen(port, async () => {
 
                 let taxa = parseFloat(object['taxa'])
 
-                let valorFinanciamento = 211000
+                let valorFinanciamento = parseFloat(211000)
                 let txJuros = 0.0
                 if (valorParce > 264000.00) {
                     txJuros = taxa / 100 / 12
@@ -377,7 +377,7 @@ app.listen(port, async () => {
                 let financimento = valorParce - valorEntradaDisponivel
                 if (financimento > valorFinanciamento) {
                     entrada = financimento - valorFinanciamento - fgtsParce
-                    resultFinanciamento = financimento - fgtsParce
+                    resultFinanciamento = valorFinanciamento
                 } else {
                     entrada = 0
                     resultFinanciamento = financimento - fgtsParce
