@@ -377,7 +377,7 @@ app.listen(port, async () => {
                 let financimento = valorParce - valorEntradaDisponivel
                 if (financimento > valorFinanciamento) {
                     entrada = financimento - valorFinanciamento - fgtsParce
-                    resultFinanciamento = valorFinanciamento
+                    resultFinanciamento = financimento - fgtsParce
                 } else {
                     entrada = 0
                     resultFinanciamento = financimento - fgtsParce
