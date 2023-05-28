@@ -1,6 +1,8 @@
+const request = require('request')
+
 class ScoreService {
     constructor() {
-        this.url = process.env.URL_HEROKU || "https://api-get-score.herokuapp.com"
+        this.url = process.env.URL_HEROKU || "http://localhost:8081"
     }
 
     async getScore(construtora) {
@@ -22,15 +24,15 @@ class ScoreService {
                             const response = JSON.parse(body)["score"]
                             resolve({ message: response, code: response.statusCode })
                         } else {
-                            reject({ message: "Not possible resolve request", code: response.statusCode })
+                            resolve({ message: "Not possible resolve request", code: response.statusCode })
                         }
                     } else {
-                        reject({ message: error, code: response.statusCode })
+                        resolve({ message: error, code: response.statusCode })
                     }
                 })
 
             } catch (Exception) {
-                reject({ message: Exception, code: 404 })
+                resolve({ message: Exception, code: 404 })
             }
         })
     }
