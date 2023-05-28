@@ -1,7 +1,7 @@
 const GoogleService = require("../service/GoogleService")
 const ScoreService = require("../service/ScoreService")
 const ViaCepService = require("../service/ViaCepService")
-const Client = require("./Client")
+const MongoClient = require("./MongoClient")
 const Finance = require("./FinancimentoClient")
 const { ObjectId } = require('mongodb')
 
@@ -10,7 +10,7 @@ class ApartamentClient {
     this.googleService = new GoogleService()
     this.scoreService = new ScoreService()
     this.viaCepService = new ViaCepService()
-    this.client = new Client()
+    this.client = new MongoClient()
     this.json = {}
     this.body = {}
     this.coordinates = {}

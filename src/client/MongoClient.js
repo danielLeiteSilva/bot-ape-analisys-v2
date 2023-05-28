@@ -1,6 +1,6 @@
 const Connection = require("../db/Connection")
 
-class Client extends Connection {
+class MongoClient extends Connection {
     constructor() {
         super()
     }
@@ -32,4 +32,4 @@ class Client extends Connection {
 }
 
 
-module.exports = Client
+module.exports = MongoClient
