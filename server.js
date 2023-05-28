@@ -1,16 +1,15 @@
-const express = require('express')
-const app = express()
+const app = require('express')()
 const MongoClient = require('./MongoClient')
 const Finance = require('./Financimento')
 const fs = require('fs')
 const XLSX = require('xlsx')
 const { ObjectId } = require('mongodb')
 
-const port = process.env.PORT || 8084
+const Router = require('./routes')
 
-app.get("/", (req, res) => {
-    res.status(200).json({ response: "ok" })
-})
+const port = process.env.PORT || 8080
+
+app.use(Router)
 
 app.listen(port, async () => {
 

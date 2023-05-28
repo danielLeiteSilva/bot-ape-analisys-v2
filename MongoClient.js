@@ -10,6 +10,7 @@ async function Main() {
     console.log('Connected successfully to server');
     const db = await client.db(dbName);
     const collection = await db.collection('projects');
+    // const collection = await db.collection('test');
 
     return collection
 }
