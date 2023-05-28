@@ -11,10 +11,18 @@ class MongoConnection {
         });
     }
 
-    async connection() {
-        await this.client.connect();
-        const db = await this.client.db(this.database);
-        return await db.collection(this.collection);
+    connect = async () => {
+        return await this.client.connect()
+    }
+
+    data = async () => {
+        await this.connect()
+        return await this.client.db(this.database)
+    }
+
+    connection = async () => {
+        const database = await this.data()
+        return await database.collection(this.collection)
     }
 }
 

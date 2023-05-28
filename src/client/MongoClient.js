@@ -1,4 +1,4 @@
-const Connection = require("../db/Connection")
+const Connection = require("../db/MongoConnection")
 
 class MongoClient extends Connection {
     constructor() {
