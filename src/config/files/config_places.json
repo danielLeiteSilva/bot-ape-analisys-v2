@@ -1,0 +1,7 @@
+[
+  { "type": "school", "radius": "1000"},
+  { "type": "supermarket", "radius": "1000"},
+  { "type": "subway_station", "radius": "5000"},
+  { "type": "train_station", "radius": "5000"},
+  { "type": "hospital", "radius": "5000"}
+]
