@@ -1,6 +1,6 @@
-const Connection = require("../db/MongoConnection")
+const MongoConnection = require("../db/MongoConnection")
 
-class MongoClient extends Connection {
+class MongoClient extends MongoConnection {
     constructor() {
         super()
     }
@@ -12,7 +12,7 @@ class MongoClient extends Connection {
 
     async insertOne(data) {
         let connection = await this.connection()
-        return connection.insertOne(data)
+        return connection.insertOne(data) 
     }
 
     async all() {

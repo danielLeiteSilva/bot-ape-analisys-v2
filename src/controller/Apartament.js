@@ -1,76 +1,57 @@
-const ApartamentClient = require("../client/ApartamentClient")
-
-const {
-  setBody,
-  registerAddress,
-  registerLongitude,
-  registerScore,
-  registerLatitude,
-  setCoordinates,
-  registerMarket,
-  registerSchool,
-  registerHospital,
-  registerSubways,
-  registerTrains,
-  registerDistanceWorkAndTimeDaniel,
-  registerDistanceWorkAndTimeRaquel,
-  registerHour,
-  registerEnquadramento,
-  registerGorverno,
-  registerDocumentacao,
-  registerCondominio,
-  registerFinanciamento,
-  registerIncc,
-  registerTipoTabela,
-  registerZoneamento,
-  registerApartament,
-  getAllApartaments
-} = new ApartamentClient()
+const ApartamentClient = require('../client/ApartamentClient')
+const CondominioClient = require('../client/CondominioClient')
+const DocumentClient = require('../client/DocumentClient')
+const FinanceClient = require('../client/FinanceClient')
+const GeocodingClient = require('../client/GeocodingClient')
+const GooglePlaceClient = require('../client/GooglePlaceClient')
+const GovernoClient = require('../client/GovernoClient')
+const InccClient = require('../client/InccClient')
+const ScoreClient = require('../client/ScoreClient')
+const ViaCepClient = require('../client/ViaCepClient')
 
 class Apartament {
-  async all(request, response) {
+  async allApartaments(request, response) {
     try {
       const result = await getAllApartaments()
-      response.status(200).json({ message: result })
+      response
+        .status(200)
+        .json({ message: result })
     } catch (error) {
       console.log(error)
-      response.status(400).json({ message: error })
+      response
+        .status(400)
+        .json({ message: error })
     }
   }
 
-  async register(request, response) {
+  async registerApartaments(request, response) {
     const body = request.body
     try {
-      setBody(body)
-      await registerAddress()
-      await registerLatitude()
-      await registerScore()
-      await registerLongitude()
-      await setCoordinates()
-      await registerMarket()
-      await registerSchool()
-      await registerHospital()
-      await registerSubways()
-      await registerTrains()
-      await registerDistanceWorkAndTimeDaniel()
-      await registerDistanceWorkAndTimeRaquel()
-      await registerHour()
-      await registerEnquadramento()
-      await registerGorverno()
-      await registerDocumentacao()
-      await registerCondominio()
-      await registerFinanciamento()
-      await registerIncc()
-      await registerTipoTabela()
-      await registerZoneamento()
+      const apartamentClient = new ApartamentClient(body)
 
-      const result = await registerApartament()
-      response.status(200).json({ message: result })
+      await apartamentClient.register(new ScoreClient())
+      await apartamentClient.register(new ViaCepClient())
+      await apartamentClient.register(new GeocodingClient())
+      await apartamentClient.register(new FinanceClient())
+      await apartamentClient.register(new CondominioClient())
+      await apartamentClient.register(new DocumentClient())
+      await apartamentClient.register(new GovernoClient())
+      await apartamentClient.register(new GooglePlaceClient())
+
+      const incc = new InccClient(apartamentClient.getObject())
+      await apartamentClient.register(incc)
+
+      response
+        .status(200)
+        .json({ message: apartamentClient.getObject() })
+
     } catch (error) {
       console.log(error)
-      response.status(400).json({ message: error })
+      response
+        .status(400)
+        .json({ message: error })
     }
   }
 }
 
-module.exports = new Apartament
+module.exports = new Apartament()
