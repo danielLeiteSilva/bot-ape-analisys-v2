@@ -37,10 +37,10 @@ class FinanceClient {
 
   register = async (body) => {
 
-    const financiamento = this.finance_calculated(body)
+    const valor = this.finance_calculated(body)
     const entrada = this.entry_calculated(body)
 
-    return { key: "financimento", value: { financiamento, entrada } }
+    return { key: "financiamento", value: { valor, entrada } }
   }
 }
 

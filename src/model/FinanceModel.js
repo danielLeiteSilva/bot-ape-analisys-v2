@@ -1,5 +1,11 @@
-class Finance {
-    constructor(txJuros, vFinaciado, nMeses) { 
+class FinanceModel {
+    constructor() { 
+        this.txJuros = 0.0
+        this.vFinaciado = 0
+        this.nMeses = 0
+    }
+
+    setValues(txJuros, vFinaciado, nMeses){
         this.txJuros = txJuros
         this.vFinaciado = vFinaciado
         this.nMeses = nMeses
@@ -36,4 +42,4 @@ class Finance {
     }
 }
 
-module.exports = Finance
+module.exports = FinanceModel

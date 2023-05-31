@@ -32,6 +32,29 @@ class GoogleService {
         })
     }
 
+    async getCordinates(address) {
+        return new Promise((resolve) => {
+            try {
+                request.get(`${this.api}/geocode/json?address=${address}&key=${this.key}`, (error, response, body) => {
+                    if (!error) {
+                        if (response.statusCode === 200) {
+                            const { location } = JSON.parse(body)['results'][0]['geometry']
+                            const coordinates = { latitude: location.lat, longitude: location.lng }
+                            resolve({ message: coordinates, code: response.statusCode })
+                        } else {
+                            reject({ message: "Not possible resolve request", code: response.statusCode })
+                        }
+                    } else {
+                        reject({ message: error, code: response.statusCode })
+                    }
+                })
+
+            } catch (Exception) {
+                reject({ message: Exception, code: 404 })
+            }
+        })
+    }
+
     async place(geometry, type, radius) {
         return new Promise((resolve) => {
             try {

@@ -7,7 +7,7 @@ class Config {
   }
 
   readConfig = (fileName) => {
-    const buffer = fs.readFileSync(`${this.path_config}/${fileName}.json`)
+    const buffer = fs.readFileSync(path.join(this.path_config, `${fileName}`))
     return JSON.parse(Buffer.from(buffer).toString())
   }
 

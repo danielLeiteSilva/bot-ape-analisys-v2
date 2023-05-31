@@ -2,21 +2,22 @@ const GoogleService = require("../service/GoogleService")
 const { readConfig } = require("../config/Config")
 
 class GooglePlaceClient {
-  constructor() {
+  constructor(object) {
     this.googleService = new GoogleService()
     this.config = readConfig('config_places.json')
+    this.object = object
   }
 
-  register = async (coordinates) => {
-    let locals = [], results = []
+  register = async (body) => {
+    let results = []
     for (let placeInfo of this.config) {
+      let locals = []
       const { type, radius } = placeInfo
-      const response = await this.googleService.place(coordinates, type, radius)
+      const response = await this.googleService.place(this.object.geocoding, type, radius)
       response["message"]["results"].map(place => {
         locals.push(place.name)
       })
       results.push({ type, locals })
-      locals = []
     }
     return { key: "places", value: results }
   }
