@@ -9,6 +9,7 @@ const GooglePlaceClient = require('../client/GooglePlaceClient')
 const GovernoClient = require('../client/GovernoClient')
 const HourClient = require('../client/HourClient')
 const InccClient = require('../client/InccClient')
+const MongoClient = require('../client/MongoClient')
 const ScoreClient = require('../client/ScoreClient')
 const TabelaClient = require('../client/TabelaClient')
 const ViaCepClient = require('../client/ViaCepClient')
@@ -62,9 +63,12 @@ class Apartament {
       const tabelaClient = new TabelaClient(object)
       apartamentClient.register(tabelaClient)
 
+      const mongoClient = new MongoClient()
+      const document = await mongoClient.insertOne(apartamentClient.getObject())
+
       response
         .status(200)
-        .json({ message: apartamentClient.getObject() })
+        .json({ message: Object.assign(document, apartamentClient.getObject()) })
 
     } catch (error) {
       console.log(error)
