@@ -32,4 +32,4 @@ class MongoClient extends MongoConnection {
 }
 
 
-module.exports = MongoClient
+module.exports = new MongoClient

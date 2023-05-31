@@ -15,10 +15,11 @@ const TabelaClient = require('../client/TabelaClient')
 const ViaCepClient = require('../client/ViaCepClient')
 const ZoneamentoClient = require('../client/ZoneamentoClient')
 
+
 class Apartament {
   async allApartaments(request, response) {
     try {
-      const result = await getAllApartaments()
+      const result = await MongoClient.all()
       response
         .status(200)
         .json({ message: result })
@@ -45,26 +46,15 @@ class Apartament {
       await apartamentClient.register(new EnquadramentoClient())
       await apartamentClient.register(new HourClient())
       await apartamentClient.register(new ZoneamentoClient())
-
+      
       const object = apartamentClient.getObject()
+      await apartamentClient.register(new InccClient(object))
+      await apartamentClient.register(new GooglePlaceClient(object))
+      await apartamentClient.register(new DistanceWorkClient(object, "daniel"))
+      await apartamentClient.register(new DistanceWorkClient(object, "raquel"))
+      await apartamentClient.register(new TabelaClient(object))
 
-      const incc = new InccClient(object)
-      await apartamentClient.register(incc)
-
-      const places = new GooglePlaceClient(object)
-      await apartamentClient.register(places)
-
-      const distanceWorkClient_daniel = new DistanceWorkClient(object, "daniel")
-      await apartamentClient.register(distanceWorkClient_daniel)
-
-      const distanceWorkClient_raquel = new DistanceWorkClient(object, "raquel")
-      await apartamentClient.register(distanceWorkClient_raquel)
-
-      const tabelaClient = new TabelaClient(object)
-      apartamentClient.register(tabelaClient)
-
-      const mongoClient = new MongoClient()
-      const document = await mongoClient.insertOne(apartamentClient.getObject())
+      const document = await MongoClient.insertOne(apartamentClient.getObject())
 
       response
         .status(200)
