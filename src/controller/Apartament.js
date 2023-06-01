@@ -34,6 +34,8 @@ class Apartament {
   async registerApartaments(request, response) {
     const body = request.body
     try {
+
+      //Patterns strategy com solid
       const apartamentClient = new ApartamentClient(body)
 
       await apartamentClient.register(new ScoreClient())
