@@ -11,7 +11,7 @@ class DistanceWorkClient {
 
   register = async body => {
     const work = await this.googleService.getDistanceAndTime(this.object?.endereco, this.file[this.key])
-    return { key: `trabalho_${this.key}`, value: work["message"]["duration"] }
+    return { key: `trabalho_${this.key}`, value: { duration: work["message"]["duration"], distance: work["message"]["distance"]} }
   }
 }
 

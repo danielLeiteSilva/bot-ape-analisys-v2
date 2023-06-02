@@ -48,19 +48,19 @@ class TabelaClient {
   priceResult = (renda) => {
     let percentSac = this.percentSac(renda)
     if (percentSac < 30.0) {
-      return { key: "tabela", value: { tipo_financiamento: "Price/Sac", valor_max_parcela: this.parcelaPrice() } }
+      return { key: "tabela", value: { tipo_financiamento: "Price/Sac", valor_max_parcela: this.parcelaPrice(), sac: this.sac(), price: this.price()}}
     }
   }
 
   sacResult = (renda) => {
     let percentPrice = this.percentPrice(renda)
     if (percentPrice < 30.0) {
-      return { key: "tabela", value: { tipo_financiamento: "Price", valor_max_parcela: this.parcelaSac() } }
+      return { key: "tabela", value: { tipo_financiamento: "Price", valor_max_parcela: this.parcelaSac(), sac: this.sac(), price: this.price()} }
     }
   }
 
   nefResult = (renda) => {
-    return { key: "tabela", value: { tipo_financiamento: "NEF", valor_max_parcela: this.parcela(renda) } }
+    return { key: "tabela", value: { tipo_financiamento: "NEF", valor_max_parcela: this.parcela(renda), sac: this.sac(), price: this.price()}}
   }
 
   register = body => {

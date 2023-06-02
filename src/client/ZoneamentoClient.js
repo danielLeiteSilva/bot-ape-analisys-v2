@@ -12,19 +12,19 @@ class ZoneamentoClient {
   }
 
   his_1 = renda => {
-    if (renda < this.zona(3)) return "HIS 1"
+    if (renda < this.zona(3)) return { key: "zoneamento", value: "HIS 1" }
   }
 
   his_2 = renda => {
-    if (renda < this.zona(6)) return "HIS 2"
+    if (renda < this.zona(6)) return { key: "zoneamento", value: "HIS 2" }
   }
 
   hmp = renda => {
-    if (renda < this.zona(10)) return "HMP"
+    if (renda < this.zona(10)) return { key: "zoneamento", value: "HMP" }
   }
 
   r2v = renda => {
-    if (renda > this.zona(10)) return "R2V"
+    if (renda > this.zona(10)) return { key: "zoneamento", value: "R2V" }
   }
 
   register = body => {
