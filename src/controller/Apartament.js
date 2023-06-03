@@ -32,7 +32,7 @@ class Apartament {
   }
 
   async registerApartaments(request, response) {
-    const body = request.body
+    const body = request.body.data
     try {
 
       //Patterns strategy com solid
