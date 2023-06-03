@@ -31,6 +31,20 @@ class Apartament {
     }
   }
 
+  async deleteApartament(request, response) {
+    const { id } = request.params
+    try {
+      const result = await MongoClient.delete(id)
+      response
+        .status(200)
+        .json({ message: "Success", result })
+    } catch (error) {
+      response
+        .status(400)
+        .json({ message: "Failed" })
+    }
+  }
+
   async registerApartaments(request, response) {
     const body = request.body.data
     try {
@@ -48,7 +62,7 @@ class Apartament {
       await apartamentClient.register(new EnquadramentoClient())
       await apartamentClient.register(new HourClient())
       await apartamentClient.register(new ZoneamentoClient())
-      
+
       const object = apartamentClient.getObject()
       await apartamentClient.register(new InccClient(object))
       await apartamentClient.register(new GooglePlaceClient(object))

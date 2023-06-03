@@ -5,5 +5,6 @@ const Health = require('./src/controller/Health')
 app.get("/api/v1", Health.ok)
 app.post('/api/v1/apartaments/register', Apartament.registerApartaments)
 app.get("/api/v1/apartaments/all", Apartament.allApartaments)
+app.delete("/api/v1/apartaments/delete/:id", Apartament.deleteApartament)
 
 module.exports = app

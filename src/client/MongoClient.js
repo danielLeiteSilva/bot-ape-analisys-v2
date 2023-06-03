@@ -25,9 +25,9 @@ class MongoClient extends MongoConnection {
         return connection.updateOne(id, data)
     }
 
-    async delete(id, data) {
+    async delete(id) {
         let connection = await this.connection()
-        return connection.deleteOne(id, data)
+        return connection.deleteOne({_id: this.getId(id)})
     }
 }
 

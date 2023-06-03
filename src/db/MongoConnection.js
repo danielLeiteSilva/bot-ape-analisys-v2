@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb')
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 
 class MongoConnection {
     constructor() {
@@ -23,6 +23,10 @@ class MongoConnection {
     connection = async () => {
         const database = await this.data()
         return await database.collection(this.collection)
+    }
+
+    getId = (id) =>{
+        return new ObjectId(id)
     }
 }
 
