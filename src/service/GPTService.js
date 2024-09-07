@@ -1,7 +1,7 @@
 class GPTService {
     constructor(model) {
         this.model = model
-        this.token = process.env.GPT_TOKEN || "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"
+        this.token = process.env.GPT_TOKEN
         this.url = process.env.GPT_URL || "https://api.openai.com/v1/completions"
     }
 
