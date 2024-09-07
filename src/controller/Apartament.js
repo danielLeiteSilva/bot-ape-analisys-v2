@@ -52,7 +52,7 @@ class Apartament {
       //Patterns strategy com solid
       const apartamentClient = new ApartamentClient(body)
 
-      await apartamentClient.register(new ScoreClient())
+      // await apartamentClient.register(new ScoreClient())
       await apartamentClient.register(new ViaCepClient())
       await apartamentClient.register(new GeocodingClient())
       await apartamentClient.register(new FinanceClient())
