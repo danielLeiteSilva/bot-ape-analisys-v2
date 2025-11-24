@@ -4,7 +4,7 @@ const request = require('request')
 class GoogleService {
 
     constructor() {
-        this.key = process.env.KEY || "AIzaSyBUdnRFDvnIE2TKUMH9xIU1ti40mG4jJl0"
+        this.key = process.env.KEY || ""
         this.api = process.env.API || "https://maps.googleapis.com/maps/api"
     }
 
